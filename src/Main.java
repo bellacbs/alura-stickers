@@ -1,4 +1,6 @@
+import java.io.InputStream;
 import java.net.URI;
+import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -12,13 +14,21 @@ public class Main {
         String urlSeries = "https://raw.githubusercontent.com/alura-cursos/imersao-java-2-api/main/MostPopularTVs.json";
         var req = new Request();
         var parser = new JsonParser();
+        var geradora = new GeradoraDeFigurinhas();
 
         String bodyFilmes = req.get(urlFilmes);
         List<Map<String, String>> listaDeFilmes = parser.parse(bodyFilmes);
         for (Map<String, String> filme: listaDeFilmes) {
+
+            String urlImage = filme.get("image");
+            String title = filme.get("title");
+
+            InputStream inputStream = new URL(urlImage).openStream();
+            String nomeArquivo = "saida/" + title + ".png";
+
+            geradora.cria(inputStream, nomeArquivo, title);
+
             System.out.println(filme.get("title"));
-            System.out.println(filme.get("image"));
-            System.out.println(filme.get("imDbRating"));
             System.out.println();
         }
 
